@@ -1,23 +1,22 @@
 from peewee import *
 from flask_login import UserMixin
-from playhouse.postgres_ext import PostgresqlExtDatabase
+from playhouse.postgres_ext import PostgresqlExtDatabase, ArrayField
 import datetime
 
-# define models
-
-class User(UserMixin, Model):
-
+# define database
 
 DATABASE = PostgresqlExtDatabase(
-	"chef-hopper",
+	"chef_hopper",
 	host="127.0.0.1",
 	port=5432
 )
 
+# define models
+
 class User(UserMixin, Model):
-	username = Charfield(unique=True)
+	username = CharField(unique=True)
 	email = CharField(unique=True)
-	password = Charfield()
+	password = CharField()
 
 	class Meta:
 		database = DATABASE
@@ -53,7 +52,7 @@ class SavedRecipe(Model):
 		database = DATABASE
 
 class ScrapeException(Model):
-	url = Charfield()
+	url = CharField()
 	time = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
