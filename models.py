@@ -62,6 +62,6 @@ class ScrapeException(Model):
 
 def initialize():
 	DATABASE.connect()
-	DATABASE.create_tables([], safe=True)
+	DATABASE.create_tables([User, Recipe, Search, SavedRecipe, ScrapeException], safe=True)
 	print("Connecting to DB and created tables")
 	DATABASE.close()

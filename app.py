@@ -8,7 +8,17 @@ DEBUG=True
 PORT=8000
 
 app = Flask(__name__)
-app.secretkey = "kb2WB$#b4qt43b"
+app.secret_key = "kb2WB$#b4qt43b"
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+	try:
+		return models.User.get(user_id)
+	except models.DoesNotExist:
+		return None
 
 app.register_blueprint(users, url_prefix="/api/v1/users")
 
