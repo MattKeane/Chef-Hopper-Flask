@@ -58,15 +58,26 @@ def search_recipes(query):
 def save_recipe(recipe_id):
 	try:
 		recipe_to_save = models.Recipe.get_by_id(recipe_id)
-		recipe_dict = model_to_dict(recipe_to_save)
-		models.SavedRecipe.create(
-			recipe=recipe_dict["id"],
-			user=current_user.id)
-		return jsonify(
-			message="Recipe saved.",
-			data=recipe_dict,
-			status=201
-		), 201
+		try:
+			already_saved = models.SavedRecipe.get(
+				(models.SavedRecipe.user_id == current_user.id)
+				&
+				(models.SavedRecipe.recipe_id == recipe_id))
+			return jsonify(
+				message="Recipe already saved",
+				data={},
+				status=400
+			), 400
+		except models.DoesNotExist:
+			recipe_dict = model_to_dict(recipe_to_save)
+			models.SavedRecipe.create(
+				recipe=recipe_dict["id"],
+				user=current_user.id)
+			return jsonify(
+				message="Recipe saved.",
+				data=recipe_dict,
+				status=201
+			), 201
 	except models.DoesNotExist:
 		return jsonify(
 			message="Recipe does not exist.",
