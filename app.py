@@ -23,6 +23,7 @@ def load_user(user_id):
 		return None
 
 CORS(users, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(recipes, origins=["http://localhost:3000"], supports_credentials=True)
 
 app.register_blueprint(users, url_prefix="/api/v1/users")
 app.register_blueprint(recipes, url_prefix="/api/v1/recipes")
