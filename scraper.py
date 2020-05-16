@@ -113,7 +113,7 @@ def scrape_recipes(query, recipes_per_site):
 	food_network_urls = get_food_network_urls(query)
 	recipes = []
 	for i in range(0, recipes_per_site):
-		time.sleep(1)
+		# time.sleep(1)
 		if len(all_recipe_urls) >= i + 1:
 			new_all_recipes_recipe = scrape_all_recipes_recipe(all_recipe_urls[i])
 			if new_all_recipes_recipe:

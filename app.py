@@ -1,9 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 from flask_login import LoginManager
 from resources.users import users
 from resources.recipes import recipes
 from flask_cors import CORS
-
+import os
 import models
 
 DEBUG=True
@@ -28,9 +28,19 @@ CORS(recipes, origins=["http://localhost:3000"], supports_credentials=True)
 app.register_blueprint(users, url_prefix="/api/v1/users")
 app.register_blueprint(recipes, url_prefix="/api/v1/recipes")
 
-@app.route("/")
-def test_route():
-	return "route works"
+@app.before_request
+def before_request():
+	g.db = models.DATABASE
+	g.db.connect()
+
+@app.after_request
+def after_request(response):
+	g.db.close()
+	return response
+
+if "ON_HEROKU" in os.environ:
+	print("\non heroku!")
+	models.initialize()
 
 if __name__ == "__main__":
 	models.initialize()

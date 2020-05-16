@@ -2,14 +2,19 @@ from peewee import *
 from flask_login import UserMixin
 from playhouse.postgres_ext import PostgresqlExtDatabase, ArrayField
 import datetime
+import os
+from playhouse.db_url import connect
 
 # define database
 
-DATABASE = PostgresqlExtDatabase(
-	"chef_hopper",
-	host="127.0.0.1",
-	port=5432
-)
+if "ON_HEROKU" in osenviron:
+	DATABASE = connect(os.environ.get("DATABASE_URL"))
+else
+	DATABASE = PostgresqlExtDatabase(
+		"chef_hopper",
+		host="127.0.0.1",
+		port=5432
+	)
 
 # define models
 
