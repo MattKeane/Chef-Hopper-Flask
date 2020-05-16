@@ -68,7 +68,7 @@ class ScrapeException(Model):
 	class Meta:
 		database = DATABASE
 
-
+# initialize database
 
 def initialize():
 	DATABASE.connect()

@@ -3,6 +3,7 @@ import requests
 import time
 import datetime
 import models
+import lxml
 
 def log_exception(url, exception_type):
 	models.ScrapeException.create(
@@ -15,7 +16,7 @@ def get_all_recipes_urls(query):
 		search_url = "https://www.allrecipes.com/search/results"
 		payload = {"wt": query}
 		search_response = requests.get(search_url, payload)
-		search_soup = BeautifulSoup(search_response.text)
+		search_soup = BeautifulSoup(search_response.text, "lxml")
 		recipe_urls = search_soup.find_all("div", class_="fixed-recipe-card__info")
 		recipe_urls = [url.find("a")["href"] for url in recipe_urls]
 		return recipe_urls
@@ -29,7 +30,7 @@ def get_all_recipes_urls(query):
 
 def scrape_all_recipes_recipe(url):
 	response = requests.get(url)
-	soup = BeautifulSoup(response.text)
+	soup = BeautifulSoup(response.text, "lxml")
 	try:
 		soup.find("body")["class"]
 		title = str(soup.find("h1", class_="headline").string)
@@ -66,7 +67,7 @@ def get_food_network_urls(query):
 		food_nw_query = query.replace(" ", "-") + "-"
 		search_url = "https://foodnetwork.com/search/" + food_nw_query
 		search_response = requests.get(search_url, verify=False)
-		soup = BeautifulSoup(search_response.text)
+		soup = BeautifulSoup(search_response.text, "lxml")
 		recipe_urls = soup.find_all("h3", class_="m-MediaBlock__a-Headline")
 		recipe_urls = ["https:" + url.find("a")["href"] for url in recipe_urls]
 		return recipe_urls
@@ -81,7 +82,7 @@ def get_food_network_urls(query):
 def scrape_food_network_recipe(url):
 	try:
 		response = requests.get(url)
-		soup = BeautifulSoup(response.text)
+		soup = BeautifulSoup(response.text, "lxml")
 		title = str(soup.find("span", class_="o-AssetTitle__a-HeadlineText").string)
 		print(title)
 		ingredients = soup.find_all("p", class_="o-Ingredients__a-Ingredient")
@@ -100,12 +101,6 @@ def scrape_food_network_recipe(url):
 	except KeyError:
 		log_exception(url, "KeyError")
 		return False
-
-def get_food_dot_com_urls(query):
-	query = query.replace(" ", "+")
-	search_url = "https://www.food.com/search/" + query
-	search_response = requests.get(search_url)
-	print(search_response.text)
 
 
 def scrape_recipes(query, recipes_per_site):
