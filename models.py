@@ -34,7 +34,7 @@ class Recipe(Model):
 class Search(Model):
 	search_term = CharField()
 	recipe = ForeignKeyField(
-		User, 
+		Recipe, 
 		backref="searchs",
 		on_delete="CASCADE"
 	)
@@ -53,6 +53,7 @@ class SavedRecipe(Model):
 
 class ScrapeException(Model):
 	url = CharField()
+	exception_type = CharField()
 	time = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:

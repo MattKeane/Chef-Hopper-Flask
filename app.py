@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_login import LoginManager
 from resources.users import users
+from resources.recipes import recipes
 from flask_cors import CORS
 
 import models
@@ -22,7 +23,9 @@ def load_user(user_id):
 		return None
 
 CORS(users, origins=["http://localhost:3000"], supports_credentials=True)
+
 app.register_blueprint(users, url_prefix="/api/v1/users")
+app.register_blueprint(recipes, url_prefix="/api/v1/recipes")
 
 @app.route("/")
 def test_route():
