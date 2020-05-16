@@ -85,3 +85,24 @@ def get_saved_recipes():
 		message=f"Returned {len(saved_recipe_dicts)} saved recipes",
 		status=200
 	), 200
+
+@users.route("/saved_recipes/<recipe_id>", methods=["DELETE"])
+@login_required
+def delete_saved_recipe(recipe_id):
+	try:
+		recipe_to_delete = models.SavedRecipe.get(
+			(models.SavedRecipe.user_id == current_user.id)
+			&
+			(models.SavedRecipe.recipe_id == recipe_id))
+		recipe_to_delete.delete_instance()
+		return jsonify(
+			data={},
+			message="Removed saved recipe",
+			status=200
+		), 200
+	except models.DoesNotExist:
+		return jsonify(
+			data={},
+			message="Invalid selection",
+			status=401
+		), 401
