@@ -47,6 +47,10 @@ class SavedRecipe(Model):
 		User,
 		backref="savedrecipes",
 		on_delete="CASCADE")
+	recipe = ForeignKeyField(
+		Recipe,
+		backref="savedrecipes",
+		on_delete="CASCADE")
 
 	class Meta:
 		database = DATABASE

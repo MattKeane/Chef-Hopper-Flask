@@ -2,6 +2,7 @@ import models
 from flask import Blueprint, request, jsonify
 from playhouse.shortcuts import model_to_dict
 from scraper import scrape_recipes
+from flask_login import current_user, login_required
 
 recipes = Blueprint("recipes", "recipes")
 
@@ -46,8 +47,29 @@ def search_recipes(query):
 			), 200
 	else:
 		recipes = [model_to_dict(result.recipe) for result in existing_results]
-		jsonify(
+		return jsonify(
 			message="Recipes returned from database",
 			data="recipes",
 			status=200
 		), 200
+
+@recipes.route("/save/<recipe_id>", methods=["POST"])
+@login_required
+def save_recipe(recipe_id):
+	try:
+		recipe_to_save = models.Recipe.get_by_id(recipe_id)
+		recipe_dict = model_to_dict(recipe_to_save)
+		models.SavedRecipe.create(
+			recipe=recipe_dict["id"],
+			user=current_user.id)
+		return jsonify(
+			message="Recipe saved.",
+			data=recipe_dict,
+			status=201
+		), 201
+	except models.DoesNotExist:
+		return jsonify(
+			message="Recipe does not exist.",
+			data={},
+			status=400
+		), 400
