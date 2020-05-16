@@ -79,7 +79,7 @@ def get_saved_recipes():
 	saved_recipes = (models.SavedRecipe
 		.select()
 		.where(models.SavedRecipe.user_id == current_user.id))
-	saved_recipe_dicts = [model_to_dict(recipe) for recipe in saved_recipes]
+	saved_recipe_dicts = [model_to_dict(recipe)["recipe"] for recipe in saved_recipes]
 	return jsonify(
 		data=saved_recipe_dicts,
 		message=f"Returned {len(saved_recipe_dicts)} saved recipes",
