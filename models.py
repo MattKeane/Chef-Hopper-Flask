@@ -7,9 +7,9 @@ from playhouse.db_url import connect
 
 # define database
 
-if "ON_HEROKU" in osenviron:
+if "ON_HEROKU" in os.environ:
 	DATABASE = connect(os.environ.get("DATABASE_URL"))
-else
+else:
 	DATABASE = PostgresqlExtDatabase(
 		"chef_hopper",
 		host="127.0.0.1",
