@@ -64,3 +64,12 @@ def login():
 			message="Invalid username or password",
 			status=401
 		), 401
+
+@users.route("/logout", methods=["GET"])
+def logout():
+	logout_user()
+	return jsonify(
+		data={},
+		message="Logged out.",
+		status=200
+	), 200

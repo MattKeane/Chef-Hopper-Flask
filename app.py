@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_login import LoginManager
 from resources.users import users
+from flask_cors import CORS
 
 import models
 
@@ -20,6 +21,7 @@ def load_user(user_id):
 	except models.DoesNotExist:
 		return None
 
+CORS(users, origins=["http://localhost:3000"], supports_credentials=True)
 app.register_blueprint(users, url_prefix="/api/v1/users")
 
 @app.route("/")
