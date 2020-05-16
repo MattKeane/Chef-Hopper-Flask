@@ -18,7 +18,7 @@ def search_recipes(query):
 		.where(models.Search.search_term == query))
 	if len(existing_results) == 0:
 		recipes = []
-		new_recipes = scrape_recipes(query, 10)
+		new_recipes = scrape_recipes(query, 6)
 		for recipe in new_recipes:
 			recipe_entry, created = models.Recipe.get_or_create(
 				url=recipe["url"],
