@@ -33,3 +33,34 @@ def register():
 			data=created_user_dict,
 			status=201
 		), 201
+
+@users.route("/login", methods=["POST"])
+def login():
+	payload = request.get_json()
+	payload["username"] = payload["username"]
+	try:
+		user = models.User.get(models.User.username == payload["username"])
+		user_dict = model_to_dict(user)
+		password_is_correct = check_password_hash(user_dict["password"], payload["password"])
+		if password_is_correct:
+			login_user(user)
+			user_dict.pop("password")
+			return jsonify(
+				data = user_dict,
+				message = "user logged in",
+				status = 200
+			), 200
+		else:
+			print("Bad password")
+			return jsonify(
+				data={},
+				message="Invalid username or password",
+				status=401
+			), 401
+	except models.DoesNotExist:
+		print("invalid username")
+		return jsonify(
+			data={},
+			message="Invalid username or password",
+			status=401
+		), 401
