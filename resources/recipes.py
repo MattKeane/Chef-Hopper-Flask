@@ -49,7 +49,7 @@ def search_recipes(query):
 		recipes = [model_to_dict(result.recipe) for result in existing_results]
 		return jsonify(
 			message="Recipes returned from database",
-			data="recipes",
+			data=recipes,
 			status=200
 		), 200
 

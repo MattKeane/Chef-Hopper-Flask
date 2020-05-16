@@ -2,7 +2,7 @@ import models
 from flask import Blueprint, request, jsonify
 from flask_bcrypt import generate_password_hash, check_password_hash
 from playhouse.shortcuts import model_to_dict
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 users = Blueprint("users", "users")
 
@@ -70,5 +70,18 @@ def logout():
 	return jsonify(
 		data={},
 		message="Logged out.",
+		status=200
+	), 200
+
+@users.route("/saved_recipes", methods=["GET"])
+@login_required
+def get_saved_recipes():
+	saved_recipes = (models.SavedRecipe
+		.select()
+		.where(models.SavedRecipe.user_id == current_user.id))
+	saved_recipe_dicts = [model_to_dict(recipe) for recipe in saved_recipes]
+	return jsonify(
+		data=saved_recipe_dicts,
+		message=f"Returned {len(saved_recipe_dicts)} saved recipes",
 		status=200
 	), 200
