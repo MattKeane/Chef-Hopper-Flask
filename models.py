@@ -68,10 +68,24 @@ class ScrapeException(Model):
 	class Meta:
 		database = DATABASE
 
+class RecipeRating(Model):
+	recipe = ForeignKeyField(
+		Recipe,
+		backref="reciperatings",
+		on_delete="CASCADE")
+	user = ForeignKeyField(
+		User,
+		backref="reciperatings",
+		on_delete="CASCADE")
+	rating = SmallIntegerField()
+
+	class Meta:
+		database = DATABASE
+
 # initialize database
 
 def initialize():
 	DATABASE.connect()
-	DATABASE.create_tables([User, Recipe, Search, SavedRecipe, ScrapeException], safe=True)
+	DATABASE.create_tables([User, Recipe, Search, SavedRecipe, ScrapeException, RecipeRating], safe=True)
 	print("Connecting to DB and created tables")
 	DATABASE.close()

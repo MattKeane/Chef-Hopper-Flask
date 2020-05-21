@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from playhouse.shortcuts import model_to_dict
 from scraper import scrape_recipes
 from flask_login import current_user, login_required
+import numpy
 
 recipes = Blueprint("recipes", "recipes")
 
@@ -78,6 +79,40 @@ def save_recipe(recipe_id):
 				data=recipe_dict,
 				status=201
 			), 201
+	except models.DoesNotExist:
+		return jsonify(
+			message="Recipe does not exist.",
+			data={},
+			status=400
+		), 400
+
+@recipes.route("/rate/<recipe_id>", methods=["POST"])
+@login_required
+def rate_recipe(recipe_id):
+	try:
+		recipe_to_rate = models.Recipe.get_by_id(recipe_id)
+		# create a rating if one doesn't exist already
+		payload = request.get_json()
+		new_rating, created = models.RecipeRating.get_or_create(
+			recipe_id=recipe_to_rate.id,
+			user_id=current_user.id,
+			defaults={"rating": payload["rating"]})
+		# update the rating entry if it already existed
+		if not created:
+			new_rating.rating = payload["rating"]
+			new_rating.save()
+		# get all ratings for that recipe
+		all_ratings = models.RecipeRating.select().where(models.RecipeRating.recipe_id == recipe_to_rate.id)
+		all_ratings = [model_to_dict(rating_entry)["rating"] for rating_entry in all_ratings]
+		# get the average of the ratings
+		new_avg = numpy.mean(all_ratings)
+		recipe_to_rate.avg_rating = new_avg
+		recipe_to_rate.save()
+		return jsonify(
+			message="Recipe rated",
+			data=model_to_dict(recipe_to_rate),
+			status=200
+		), 200
 	except models.DoesNotExist:
 		return jsonify(
 			message="Recipe does not exist.",
