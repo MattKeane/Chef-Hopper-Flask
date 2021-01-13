@@ -12,6 +12,11 @@ PORT=8000
 app = Flask(__name__)
 app.secret_key = "kb2WB$#b4qt43b"
 
+app.config.update(
+  SESSION_COOKIE_SECURE=True,
+  SESSION_COOKIE_SAMESITE='None'
+)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
