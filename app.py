@@ -8,7 +8,7 @@ import models
 from dotenv import load_dotenv
 
 load_dotenv()
-SESSION_SECRET = os.getnenv('SESSION_SECRET')
+SESSION_SECRET = os.getenv('SESSION_SECRET')
 DEBUG=True
 PORT=8000
 
