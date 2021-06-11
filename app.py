@@ -5,12 +5,15 @@ from resources.recipes import recipes
 from flask_cors import CORS
 import os
 import models
+from dotenv import load_dotenv
 
+load_dotenv()
+SESSION_SECRET = os.getnenv('SESSION_SECRET')
 DEBUG=True
 PORT=8000
 
 app = Flask(__name__)
-app.secret_key = "kb2WB$#b4qt43b"
+app.secret_key = SESSION_SECRET
 
 app.config.update(
   SESSION_COOKIE_SECURE=True,
