@@ -30,6 +30,29 @@ def load_user(user_id):
 	except models.DoesNotExist:
 		return None
 
+# Return JSON if user is unauthorized
+@login_manager.unauthorized_handler
+def handle_unauthorized():
+	return jsonify(
+		data={},
+		message='You are not authorized to do that',
+		status=401), 401
+
+# Return JSON for 404 errors
+@app.errorhandler(404)
+def handle_404(err):
+	return jsonify(
+		data={},
+		message='404: Resource not found',
+		status=404), 404
+
+@app.errorhandler(405)
+def handle_405(err):
+	return jsonify(
+		data={},
+		message='405: Method not allowed',
+		status=405), 405
+
 CORS(users, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com"], supports_credentials=True)
 CORS(recipes, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com"], supports_credentials=True)
 
