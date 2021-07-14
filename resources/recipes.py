@@ -17,6 +17,7 @@ def search_recipes(query):
 	existing_results = (models.Search
 		.select()
 		.where(models.Search.search_term == query))
+	# if no results exist in the db, scrape some
 	if len(existing_results) == 0:
 		recipes = []
 		new_recipes = scrape_recipes(query, 6)
