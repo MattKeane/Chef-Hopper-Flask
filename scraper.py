@@ -35,7 +35,11 @@ def scrape_all_recipes_recipe(url):
 		soup.find("body")["class"]
 		title = str(soup.find("h1", class_="headline").string)
 		ingredients = soup.find_all("span", class_="ingredients-item-name")
+		print("Ingredients before conversion:")
+		print(ingredients)
 		ingredients = [str(ingredient.string).strip() for ingredient in ingredients]
+		print("ingredients after conversion:")
+		print(ingredients)
 		instruction_section = soup.find("ul", class_="instructions-section")
 		instructions = [str(p.string) for p in instruction_section.find_all("p")]
 	except KeyError:
@@ -84,9 +88,8 @@ def scrape_food_network_recipe(url):
 		response = requests.get(url)
 		soup = BeautifulSoup(response.text, "lxml")
 		title = str(soup.find("span", class_="o-AssetTitle__a-HeadlineText").string)
-		print(title)
-		ingredients = soup.find_all("p", class_="o-Ingredients__a-Ingredient")
-		ingredients = [str(ingredient.string) for ingredient in ingredients]
+		ingredients = soup.find_all("span", class_="o-Ingredients__a-Ingredient--CheckboxLabel")
+		ingredients = [str(ingredient.string) for ingredient in ingredients[1:]]
 		instructions = soup.find_all("li", class_="o-Method__m-Step")
 		instructions = [str(instruction.string).strip() for instruction in instructions]
 		return {
