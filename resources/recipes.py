@@ -11,6 +11,23 @@ recipes = Blueprint("recipes", "recipes")
 def test_recipe_route():
 	return "Route works"
 
+@recipes.get("/<id>")
+def get_recipe(id):
+	try:
+		recipe = models.Recipe.get_by_id(id)
+		recipe_dict = model_to_dict(recipe)
+		return jsonify(
+			message="Recipe retrieved",
+			data=recipe_dict,
+			status=200
+		), 200
+	except models.DoesNotExist:
+		return jsonify(
+			message="Invalid recipe ID",
+			data={},
+			status=400
+		), 400
+
 @recipes.route("/search/<query>", methods=["GET"])
 def search_recipes(query):
 	query = query.replace("+", " ")
