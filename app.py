@@ -53,8 +53,8 @@ def handle_405(err):
 		message='405: Method not allowed',
 		status=405), 405
 
-CORS(users, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com", "http://chef-hopper.herokuapp.com"], supports_credentials=True)
-CORS(recipes, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com", "http://chef-hopper.herokuapp.com"], supports_credentials=True)
+CORS(users, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com", "http://chef-hopper.herokuapp.com", "http://chefhopper.herokuapp.com", "https://chefhopper.herokuapp.com"], supports_credentials=True)
+CORS(recipes, origins=["http://localhost:3000", "https://chef-hopper.herokuapp.com", "http://chef-hopper.herokuapp.com", "http://chefhopper.herokuapp.com", "https://chefhopper.herokuapp.com"], supports_credentials=True)
 
 app.register_blueprint(users, url_prefix="/api/v1/users")
 app.register_blueprint(recipes, url_prefix="/api/v1/recipes")
