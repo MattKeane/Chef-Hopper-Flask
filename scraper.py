@@ -14,11 +14,11 @@ def log_exception(url, exception_type):
 def get_all_recipes_urls(query):
 	try:
 		search_url = "https://www.allrecipes.com/search/results"
-		payload = {"wt": query}
+		payload = {"search": query}
 		search_response = requests.get(search_url, payload)
 		search_soup = BeautifulSoup(search_response.text, "lxml")
-		recipe_urls = search_soup.find_all("div", class_="fixed-recipe-card__info")
-		recipe_urls = [url.find("a")["href"] for url in recipe_urls]
+		recipe_urls = search_soup.find_all("a", class_="card__titleLink")
+		recipe_urls = [url["href"] for url in recipe_urls]
 		return recipe_urls
 	except AttributeError:
 		log_exception(search_url + payload, "AttributeError")
@@ -35,11 +35,7 @@ def scrape_all_recipes_recipe(url):
 		soup.find("body")["class"]
 		title = str(soup.find("h1", class_="headline").string)
 		ingredients = soup.find_all("span", class_="ingredients-item-name")
-		print("Ingredients before conversion:")
-		print(ingredients)
 		ingredients = [str(ingredient.string).strip() for ingredient in ingredients]
-		print("ingredients after conversion:")
-		print(ingredients)
 		instruction_section = soup.find("ul", class_="instructions-section")
 		instructions = [str(p.string) for p in instruction_section.find_all("p")]
 	except KeyError:
